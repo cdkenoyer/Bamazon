@@ -12,32 +12,54 @@ var connection = mysql.createConnection({
     database: "bamazon_db"
 });
 
-connection.connect(function(err) {
+connection.connect(function (err) {
     if (err) throw err;
     console.log("connected as id " + connection.threadId + "\n");
-    formatResArray();
-  });
-  
-  function formatResArray() {
-    connection.query("SELECT * FROM products", function(err, res) {
-      if (err) throw err;
-    //use npm console.table to format response array
-      var table = console.table(res);
-    // console.log(table);
-    //   console.log(res);
-      connection.end();
-    });
-  }
+    start();
+});
 
-// need inquirer input and logic here
-// ask user what item to purchase by providing item id and take in user input
+function start() {
+    connection.query("SELECT * FROM products", function (err, res) {
+        if (err) throw err;
+        
+        //use npm console.table to format response array
+        var table = console.table(res);
 
-
-// ask for quantity of items/units to purchase
-
+        // need inquirer input and logic here
+        // ask user what item to purchase by providing item id and take in user input
+        inquirer.prompt([/* Pass your questions in here */
+            {
+                name: "item_id",
+                type: "input",
+                message: "Type the item id number of the item you wish to purchase: "
+            },
+            // ask for quantity of items/units to purchase
+            {
+                name: "item_quant",
+                type: "input",
+                message: "How many would you like?"
+            }
 
 // check user's quantity to purchase against available stock_quantity =<
 
+
+        ]).then(answers => {
+
+            // trying many things here
+
+            console.log(answers.item_id, answers.item_quant, "\n");
+            console.log("\n Thankyou for your purchase. \n");
+            
+            start();
+            
+        });
+
+        // console.log(table);
+        //   console.log(res);
+        //   connection.end();
+
+    });
+}
 
 // if quantity available continue - message confirmation and UPDATE products item stock_quantity
 
@@ -46,7 +68,8 @@ connection.connect(function(err) {
 
 
 // after purchase message confirmation and display updated and console.table formatted array again
-formatResArray();
+
+
 // console.log("Thanks for your purchase. Continue shopping")
 
 // not sure at this point where to end connection
